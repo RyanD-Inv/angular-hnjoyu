@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface Todo {
-  _id: number | string;
+  _id: string;
   text: string;
   complete: boolean;
 }
@@ -24,7 +24,7 @@ export class TodoService {
     }, error => console.log('Could not load todos.'));
   }
 
-  load(id: number | string) {
+  load(id: string) {
     this.http.get<Todo>(`${this.baseUrl}/todos/${id}`).subscribe(data => {
       let notFound = true;
 
@@ -43,7 +43,7 @@ export class TodoService {
     }, error => console.log('Could not load todo.'));
   }
 
-  create(todo: Todo) {
+  create(todo: { value: any }) {
     this.http.post<Todo>(`${this.baseUrl}/todos`, JSON.stringify(todo)).subscribe(data => {
       this.dataStore.todos.push(data);
       this._todos.next(Object.assign({}, this.dataStore).todos);
