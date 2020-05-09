@@ -8,6 +8,6 @@
 	</p>
 
 	<div *ngFor="let todo of todos | async">
-		{{ todo.value }} <button (click)="deleteTodo(todo.id)">x</button>
+		{{ todo }} <button (click)="deleteTodo(todo.id)">x</button>
 	</div>
 </div>

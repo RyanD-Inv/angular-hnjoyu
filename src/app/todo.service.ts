@@ -3,15 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface Todo {
-  id: number | string;
-  createdAt: number;
-  value: string;
+  _id: number | string;
+  text: string;
+  complete: boolean;
 }
 
 @Injectable()
 export class TodoService {
   private _todos = new BehaviorSubject<Todo[]>([]);
-  private baseUrl = 'https://56e05c3213da80110013eba3.mockapi.io/api';
+  private baseUrl = 'http://heroku-gitlab-env-prod-dep.herokuapp.com';
   private dataStore: { todos: Todo[] } = { todos: [] };
   readonly todos = this._todos.asObservable();
 
@@ -29,7 +29,7 @@ export class TodoService {
       let notFound = true;
 
       this.dataStore.todos.forEach((item, index) => {
-        if (item.id === data.id) {
+        if (item._id === data._id) {
           this.dataStore.todos[index] = data;
           notFound = false;
         }
@@ -51,19 +51,19 @@ export class TodoService {
   }
 
   update(todo: Todo) {
-    this.http.put<Todo>(`${this.baseUrl}/todos/${todo.id}`, JSON.stringify(todo)).subscribe(data => {
+    this.http.put<Todo>(`${this.baseUrl}/todos/${todo._id}`, JSON.stringify(todo)).subscribe(data => {
       this.dataStore.todos.forEach((t, i) => {
-        if (t.id === data.id) { this.dataStore.todos[i] = data; }
+        if (t._id === todo._id) { this.dataStore.todos[i] = data; }
       });
 
       this._todos.next(Object.assign({}, this.dataStore).todos);
     }, error => console.log('Could not update todo.'));
   }
 
-  remove(todoId: number) {
+  remove(todoId: number | string) {
     this.http.delete(`${this.baseUrl}/todos/${todoId}`).subscribe(response => {
       this.dataStore.todos.forEach((t, i) => {
-        if (t.id === todoId) { this.dataStore.todos.splice(i, 1); }
+        if (t._id === todoId) { this.dataStore.todos.splice(i, 1); }
       });
 
       this._todos.next(Object.assign({}, this.dataStore).todos);

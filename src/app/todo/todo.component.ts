@@ -27,7 +27,7 @@ export class TodoComponent implements OnInit {
   ngOnInit() {
     this.todos = this.todoService.todos;
     this.singleTodo = this.todoService.todos.pipe(
-      map(todos => todos.find(item => item.id === '1'))
+      map(todos => todos.find(item => item._id === '1'))
     );
 
     this.todoService.loadAll();
